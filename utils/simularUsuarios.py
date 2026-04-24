@@ -1,35 +1,32 @@
 import random
 
+
 def simular_usuarios(numeroUsuarios):
-    
     listaUsuarios = ["robert", "adelaida", "mariana", "isabela"]
-
-    listaEmails = ["robert@example.com", "adelaida@example.com", "mariana@example.com", "isabela@example.com"]
-
     listaCodigos = ["AN01", "AN02", "AN03", "AN04", "AN05"]
 
-    usuarios=[]
+    usuarios = []
 
     for _ in range(numeroUsuarios):
-
-        usuario={
-            "usu_codigo":random.choice(listaCodigos),
-            "usu_nombre":random.choice(listaUsuarios),
-            "usu_email":random.choice(listaEmails),
-            "usu_id":random.randint(1, 5000)
+        nombre = random.choice(listaUsuarios)
+        usuario = {
+            "usu_codigo": random.choice(listaCodigos),
+            "usu_nombre": nombre,
+            "usu_email": f"{nombre}@example.com",
+            "usu_id": random.randint(1, 5000)
         }
 
-        propabilidadError = random.random()
-
-        if propabilidadError < 0.1:
-            usuario ["usu_codigo"] = random.choice([None, -1, 0])
-        elif propabilidadError < 0.3:
-            usuario ["usu_id"] = random.choice([None, -1, 0])
-        elif propabilidadError < 0.6:
-            usuario ["usu_email"] = random.choice([None, "NaN", "invalid_email"])
-        elif propabilidadError < 0.9:
-            usuario ["usu_nombre"] = random.choice([None, "NaN", ""])
+        probabilidad_error = random.random()
+        if probabilidad_error < 0.15:
+            usuario["usu_codigo"] = random.choice([None, "AN99", "  ", "-1"])
+        elif probabilidad_error < 0.35:
+            usuario["usu_id"] = random.choice([None, -1, 0, "abc", " "])
+        elif probabilidad_error < 0.6:
+            usuario["usu_email"] = random.choice([None, "NaN", "invalid_email", " RObert@example.com ", "robert@invalid"])
+        elif probabilidad_error < 0.85:
+            usuario["usu_nombre"] = random.choice([None, "NaN", "", "   ", "juan"])
 
         usuarios.append(usuario)
+
     return usuarios
 
