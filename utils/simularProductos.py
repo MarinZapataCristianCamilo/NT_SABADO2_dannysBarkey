@@ -1,5 +1,7 @@
 import random
-#panaderia dannysBarkey 
+
+# panaderia dannysBarkey
+
 def simular_productos(numeroProductos):
     pro_nombres = ["pan", "pastel", "galleta", "croissant"]
     pro_precios = [1500, 2500, 500, 2000]
@@ -9,12 +11,24 @@ def simular_productos(numeroProductos):
     productos = []
 
     for _ in range(numeroProductos):
+        nombre = random.choice(pro_nombres)
         producto = {
-            "pro_nombre": random.randint(0, 5000 ),
+            "pro_nombre": nombre,
             "pro_precio": random.choice(pro_precios),
             "pro_codigo": random.choice(pro_codigos),
             "pro_stock": random.choice(pro_stock)
         }
+
+        probabilidad_error = random.random()
+        if probabilidad_error < 0.15:
+            producto["pro_nombre"] = random.choice([None, "", "  ", 12345, "producto_desconocido"])
+        elif probabilidad_error < 0.35:
+            producto["pro_precio"] = random.choice([None, -100, 0, "gratis", "NaN"])
+        elif probabilidad_error < 0.55:
+            producto["pro_codigo"] = random.choice([None, "AN99", "  ", "12345"])
+        elif probabilidad_error < 0.75:
+            producto["pro_stock"] = random.choice([None, -5, "mucho", 9999])
+
         productos.append(producto)
 
     return productos
