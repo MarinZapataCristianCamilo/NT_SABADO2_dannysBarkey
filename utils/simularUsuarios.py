@@ -13,10 +13,10 @@ def simular_usuarios(numeroUsuarios):
     for _ in range(numeroUsuarios):
 
         usuario={
-            "usu_codigo":random.randint(0, 5000),
+            "usu_codigo":random.choice(listaCodigos),
             "usu_nombre":random.choice(listaUsuarios),
             "usu_email":random.choice(listaEmails),
-            "usu_id":random.randint(0, 5000)
+            "usu_id":random.randint(1, 5000)
         }
 
         propabilidadError = random.random()
