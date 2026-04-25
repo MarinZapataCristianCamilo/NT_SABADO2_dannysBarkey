@@ -25,3 +25,21 @@ def describirDatosUsuario(dataFrameLimpio):
     "conteos***")
     print(f"{dataFrameLimpio["usu_codigo"].value_counts()}")
 
+
+
+def describirDatosProductos(dataFrameLimpio):
+    print("*descripcion del dataset*")
+    print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
+    print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
+    print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
+    print(f"\ntipo de datos de cada atributo: {dataFrameLimpio.dtypes}")
+
+    #estadisticas (solo aplica para datos numericos)
+    print("***estadisticas***")
+    print(f"\n{dataFrameLimpio[['pro_precio','pro_stock']].describe()}")
+
+    #informacion de conteos valiosos 
+    print("***conteos***")
+    print(f"{dataFrameLimpio['pro_stock'].value_counts()}")
+    print(f"{dataFrameLimpio['pro_codigo'].value_counts()}")
+
