@@ -8,38 +8,97 @@
 #Media-max-min-std-percentiles
 #si hay fechas, es util conocer la fecha mas antigua y la fecha mas reciente
 import pandas as pd
+
 def describirDatosUsuario(dataFrameLimpio):
-    print("descripcion del dataset*")
+    print("=== descripcion del dataset de usuarios ===")
     print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
     print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
     print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
-    print(f"\ntipo de datos de cada atributo: {dataFrameLimpio.dtypes}")
+    print(f"\ntipo de datos de cada atributo:\n{dataFrameLimpio.dtypes}")
 
-    #estadisticas (solo aplica para datos numericos)
-    print("***\n" \
-    "estadisticas***")
-    print(f"{dataFrameLimpio[["usu_id","usu_email",]].describe()}")
+    print("***estadisticas***")
+    print(dataFrameLimpio.describe(include="all"))
 
-    #informacion de conteos valiosos 
-    print("***\n" \
-    "conteos***")
-    print(f"{dataFrameLimpio["usu_codigo"].value_counts()}")
-
+    print("***conteos***")
+    if "usu_codigo" in dataFrameLimpio.columns:
+        print(dataFrameLimpio["usu_codigo"].value_counts())
 
 
 def describirDatosProductos(dataFrameLimpio):
-    print("*descripcion del dataset*")
+    print("=== descripcion del dataset de productos ===")
     print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
     print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
     print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
-    print(f"\ntipo de datos de cada atributo: {dataFrameLimpio.dtypes}")
+    print(f"\ntipo de datos de cada atributo:\n{dataFrameLimpio.dtypes}")
 
-    #estadisticas (solo aplica para datos numericos)
     print("***estadisticas***")
-    print(f"\n{dataFrameLimpio[['pro_precio','pro_stock']].describe()}")
+    print(dataFrameLimpio[["pro_precio", "pro_stock"]].describe())
 
-    #informacion de conteos valiosos 
     print("***conteos***")
-    print(f"{dataFrameLimpio['pro_stock'].value_counts()}")
-    print(f"{dataFrameLimpio['pro_codigo'].value_counts()}")
+    if "pro_stock" in dataFrameLimpio.columns:
+        print(dataFrameLimpio["pro_stock"].value_counts())
+    if "pro_codigo" in dataFrameLimpio.columns:
+        print(dataFrameLimpio["pro_codigo"].value_counts())
 
+
+def analizar_empleados(dataFrameLimpio):
+    print("=== descripcion del dataset de empleados ===")
+    print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
+    print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
+    print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
+    print(f"\ntipo de datos de cada atributo:\n{dataFrameLimpio.dtypes}")
+
+    print("***estadisticas***")
+    print(dataFrameLimpio.describe(include="all"))
+
+    print("***conteos***")
+    if "emp_cargo" in dataFrameLimpio.columns:
+        print(dataFrameLimpio["emp_cargo"].value_counts())
+
+
+def analizar_ventas(dataFrameLimpio):
+    print("=== descripcion del dataset de ventas ===")
+    print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
+    print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
+    print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
+    print(f"\ntipo de datos de cada atributo:\n{dataFrameLimpio.dtypes}")
+
+    print("***estadisticas***")
+    print(dataFrameLimpio.describe(include="all"))
+
+    print("***conteos***")
+    if "usu_codigo" in dataFrameLimpio.columns:
+        print(dataFrameLimpio["usu_codigo"].value_counts())
+
+    
+    if "ven_fecha" in dataFrameLimpio.columns:
+        print("***rango de fechas***")
+        print("fecha minima:", dataFrameLimpio["ven_fecha"].min())
+        print("fecha maxima:", dataFrameLimpio["ven_fecha"].max())
+
+def describirDatosEmpleados(dataFrameLimpio):
+    print("=== descripcion del dataset de empleados ===")
+    print(f"\nnumero de filas del dataset: {dataFrameLimpio.shape[0]}")
+    print(f"\nnumero de columnas del dataset: {dataFrameLimpio.shape[1]}")
+    print(f"\nlista de columnas disponibles: {list(dataFrameLimpio.columns)}")
+    print(f"\ntipo de datos de cada atributo:\n{dataFrameLimpio.dtypes}")
+
+    print("***estadisticas***")
+    # columna numerica real en tu modelo
+    if "emp_salario" in dataFrameLimpio.columns:
+        print(dataFrameLimpio[["emp_salario"]].describe())
+    else:
+        print(dataFrameLimpio.describe(include="all"))
+
+    print("***conteos***")
+    if "emp_cargo" in dataFrameLimpio.columns:
+        print("\nconteo por cargo:")
+        print(dataFrameLimpio["emp_cargo"].value_counts())
+
+    if "emp_nombre" in dataFrameLimpio.columns:
+        print("\nconteo por nombre:")
+        print(dataFrameLimpio["emp_nombre"].value_counts())
+
+    if "emp_codigo" in dataFrameLimpio.columns:
+        print("\nconteo por codigo:")
+        print(dataFrameLimpio["emp_codigo"].value_counts())
