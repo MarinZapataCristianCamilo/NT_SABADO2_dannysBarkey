@@ -1,4 +1,9 @@
+import os
 import pandas as pd
+
+
+def _asegurar_directorio(ruta):
+    os.makedirs(os.path.dirname(ruta), exist_ok=True)
 
 
 def limpiarDatos(dataFrameSucio):
@@ -115,6 +120,147 @@ def limpiar_empleados(dataFrameSucio):
     return dataFrameLimpio
 
 
+def exportar_usuarios(df, carpeta="data"):
+    ruta_csv = os.path.join(carpeta, "usuarios.csv")
+    ruta_json = os.path.join(carpeta, "usuarios.json")
+    _asegurar_directorio(ruta_csv)
+    df.to_csv(ruta_csv, index=False)
+    df.to_json(ruta_json, orient="records", indent=4, force_ascii=False)
+    return ruta_csv, ruta_json
 
+
+def filtrar_usuarios(df):
+    return {
+        "usuarios_robert": df.query('usu_nombre == "robert"'),
+        "usuarios_id_mayor_500": df.query('usu_id > 500'),
+        "usuarios_codigo_an01_an02": df.query('usu_codigo in ["AN01", "AN02"]'),
+    }
+
+
+def agrupar_usuarios(df):
+    return (
+        df.groupby("usu_nombre", observed=True)
+        .agg(
+            cantidad_usuarios=pd.NamedAgg(column="usu_id", aggfunc="count"),
+            id_promedio=pd.NamedAgg(column="usu_id", aggfunc="mean"),
+        )
+        .reset_index()
+    )
+
+
+def exportar_productos(df, carpeta="data"):
+    ruta_csv = os.path.join(carpeta, "productos.csv")
+    ruta_json = os.path.join(carpeta, "productos.json")
+    _asegurar_directorio(ruta_csv)
+    df.to_csv(ruta_csv, index=False)
+    df.to_json(ruta_json, orient="records", indent=4, force_ascii=False)
+    return ruta_csv, ruta_json
+
+
+def filtrar_productos(df):
+    return {
+        "productos_caros": df.query('pro_precio > 1800'),
+        "productos_stock_alto": df.query('pro_stock >= 30'),
+        "productos_codigo_an03": df.query('pro_codigo == "AN03"'),
+    }
+
+
+def agrupar_productos(df):
+    return (
+        df.groupby("pro_nombre", observed=True)
+        .agg(
+            variantes=pd.NamedAgg(column="pro_codigo", aggfunc="nunique"),
+            stock_total=pd.NamedAgg(column="pro_stock", aggfunc="sum"),
+            precio_promedio=pd.NamedAgg(column="pro_precio", aggfunc="mean"),
+        )
+        .reset_index()
+    )
+
+
+def exportar_empleados(df, carpeta="data"):
+    ruta_csv = os.path.join(carpeta, "empleados.csv")
+    ruta_json = os.path.join(carpeta, "empleados.json")
+    _asegurar_directorio(ruta_csv)
+    df.to_csv(ruta_csv, index=False)
+    df.to_json(ruta_json, orient="records", indent=4, force_ascii=False)
+    return ruta_csv, ruta_json
+
+
+def filtrar_empleados(df):
+    return {
+        "empleados_salario_alto": df.query('emp_salario > 2500'),
+        "empleados_panadero": df.query('emp_cargo == "panadero"'),
+        "empleados_codigo_positivos": df.query('emp_codigo >= 1001'),
+    }
+
+
+def agrupar_empleados(df):
+    return (
+        df.groupby("emp_cargo", observed=True)
+        .agg(
+            empleados=pd.NamedAgg(column="emp_codigo", aggfunc="count"),
+            salario_promedio=pd.NamedAgg(column="emp_salario", aggfunc="mean"),
+            salario_total=pd.NamedAgg(column="emp_salario", aggfunc="sum"),
+        )
+        .reset_index()
+    )
+
+
+def limpiar_ventas(dataFrameSucio):
+    dataFrameLimpio = dataFrameSucio.copy()
+
+    dataFrameLimpio["ven_fecha"] = pd.to_datetime(dataFrameLimpio["ven_fecha"], errors="coerce")
+    dataFrameLimpio["ven_total"] = pd.to_numeric(dataFrameLimpio["ven_total"], errors="coerce")
+    dataFrameLimpio["usu_codigo"] = dataFrameLimpio["usu_codigo"].astype("string").str.strip().str.upper()
+    dataFrameLimpio["emp_codigo"] = pd.to_numeric(dataFrameLimpio["emp_codigo"], errors="coerce")
+
+    dataFrameLimpio = dataFrameLimpio[(dataFrameLimpio["ven_total"] > 0) & (dataFrameLimpio["ven_fecha"].notna()) & (dataFrameLimpio["emp_codigo"] > 0)]
+    dataFrameLimpio = dataFrameLimpio[dataFrameLimpio["usu_codigo"].isin([codigo.upper() for codigo in ["AN01", "AN02", "AN03", "AN04", "AN05"]])]
+
+    columnas_obligatorias = ["ven_codigo", "ven_fecha", "ven_total", "usu_codigo", "emp_codigo"]
+    dataFrameLimpio = dataFrameLimpio.dropna(subset=columnas_obligatorias)
+    dataFrameLimpio = dataFrameLimpio.drop_duplicates()
+    dataFrameLimpio = dataFrameLimpio[["ven_codigo", "ven_fecha", "ven_total", "usu_codigo", "emp_codigo"]]
+
+    return dataFrameLimpio
+
+
+def exportar_ventas(df, carpeta="data"):
+    ruta_csv = os.path.join(carpeta, "ventas.csv")
+    ruta_json = os.path.join(carpeta, "ventas.json")
+    _asegurar_directorio(ruta_csv)
+    df.to_csv(ruta_csv, index=False)
+    df.to_json(ruta_json, orient="records", indent=4, force_ascii=False)
+    return ruta_csv, ruta_json
+
+
+def filtrar_ventas(df):
+    fecha_corte = pd.Timestamp.now() - pd.Timedelta(days=180)
+    return {
+        "ventas_mayores_2500": df.query('ven_total > 2500'),
+        "ventas_ultimo_semestre": df.query('ven_fecha >= @fecha_corte'),
+        "ventas_por_cliente_an01": df.query('usu_codigo == "AN01"'),
+    }
+
+
+def agrupar_ventas(df):
+    resumen_por_empleado = (
+        df.groupby("emp_codigo", observed=True)
+        .agg(
+            ventas_total=pd.NamedAgg(column="ven_total", aggfunc="sum"),
+            ventas_count=pd.NamedAgg(column="ven_codigo", aggfunc="count"),
+            venta_promedio=pd.NamedAgg(column="ven_total", aggfunc="mean"),
+        )
+        .reset_index()
+    )
+    resumen_por_cliente = (
+        df.groupby("usu_codigo", observed=True)
+        .agg(
+            ventas_total=pd.NamedAgg(column="ven_total", aggfunc="sum"),
+            ventas_count=pd.NamedAgg(column="ven_codigo", aggfunc="count"),
+        )
+        .reset_index()
+    )
+    return {"por_empleado": resumen_por_empleado, "por_cliente": resumen_por_cliente}
 
 
